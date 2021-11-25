@@ -1,9 +1,4 @@
-let title;
-let screens;
-let screenPrice;
-let rollback;
-let fullPrice;
-let adaptive;
+let title, screens, screenPrice, rollback, fullPrice, adaptive;
 
 alert('Hello world');
 console.log('Привет');

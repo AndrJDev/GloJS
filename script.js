@@ -1,7 +1,9 @@
+"use strict";
+
 let title = 'Название проекта';
 let screens = 'Простые, Сложные, Интерактивные';
 let screenPrice = 1000;
-let rollback = 50;
+let rollback = 10;
 let fullPrice = 50000;
 let adaptive = true;
 
@@ -26,3 +28,34 @@ console.log(screens.toLocaleLowerCase().split(", "));
 
 // Вывести в консоль Процент отката посреднику за работу (fullPrice * (rollback/100))
 console.log("Процент отката посреднику за работу " + (fullPrice * (rollback / 100)));
+
+// lesson03
+
+title = prompt('Как называется ваш проект?');
+screens = prompt('Какие типы экранов нужно разработать?');
+screenPrice = +prompt('Сколько будет стоить данная работа?');
+adaptive = confirm('Нужен ли адаптив на сайте?');
+
+let service1 = prompt('Какой дополнительный тип услуги нужен?');
+let servicePrice1 = +prompt('Сколько это будет стоить?');
+let service2 = prompt('Какой дополнительный тип услуги нужен?');
+let servicePrice2 = +prompt('Сколько это будет стоить?');
+
+//Итоговая стоимость работы
+fullPrice = screenPrice + servicePrice1 + servicePrice2;
+
+//Откат посреднику
+let rollbackPercent = fullPrice * (rollback / 100);
+
+let servicePercentPrice  = Math.ceil(fullPrice - rollbackPercent);
+console.log("Итого за работу: " + servicePercentPrice);
+
+if (fullPrice >= 30000) {
+    console.log("Даем скидку в 10%");
+}else if ((fullPrice >= 15000) && (fullPrice < 30000)) {
+    console.log("Даем скидку в 5%");
+}else if ((fullPrice < 15000) && (fullPrice >= 0)) {
+    console.log("Скидка не предусмотрена");
+}else if (fullPrice < 0) {
+    console.log("Что то пошло не так")
+}

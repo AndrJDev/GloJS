@@ -1,10 +1,7 @@
 "use strict";
-// lesson03
+// lesson04
 
-let rollback = 10;
-let fullPrice;
-
-let title = prompt('Как называется ваш проект?', 'Калькулятор');
+let title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
 let screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные');
 let screenPrice = +prompt('Сколько будет стоить данная работа?', 50000);
 let adaptive = confirm('Нужен ли адаптив на сайте?');
@@ -14,21 +11,63 @@ let servicePrice1 = +prompt('Сколько это будет стоить?', 20
 let service2 = prompt('Какой дополнительный тип услуги нужен?', 'php mail');
 let servicePrice2 = +prompt('Сколько это будет стоить?', 3000);
 
-//Итоговая стоимость работы
-fullPrice = screenPrice + servicePrice1 + servicePrice2;
+let rollback = 10;
+let fullPrice;
+
+let allServicePrices;
+let servicePercentPrice;
+
+//Подсчет итоговой стоимость минус сумма отката
+const getServicePercentPrices = function (price, rollback) {    
+    let rollbackPercent = price * (rollback / 100);        
+    return Math.ceil(price - rollbackPercent);
+}
+
+const getTitle = function (str) {
+    str = str.trim().toLowerCase();
+    return str[0].toUpperCase() + str.slice(1);
+}
+
+function getFullPrice() {
+    return screenPrice + servicePrice1 + servicePrice2;
+}
+
+const getAllServicePrices = function () {
+    return servicePrice1 + servicePrice2;
+}
+
+const showTypeOf = function(variable) {
+    console.log(variable, typeof variable);
+}
+
+const getRollbackMessage = function(price) {
+    if (price >= 30000) {
+        return "Даем скидку в 10%";
+    }else if ((price >= 15000) && (price < 30000)) {
+        return "Даем скидку в 5%";
+    }else if ((price < 15000) && (price >= 0)) {
+        return "Скидка не предусмотрена";
+    }else if (price < 0) {
+        return "Что то пошло не так";
+    }
+}
+
+//Сумма стоимости верстки и стоимости дополнительных услуг
+fullPrice = getFullPrice();
 
 //Откат посреднику
-let rollbackPercent = fullPrice * (rollback / 100);
+servicePercentPrice  = getServicePercentPrices(fullPrice, rollback);
 
-let servicePercentPrice  = Math.ceil(fullPrice - rollbackPercent);
-console.log("Итого за работу: " + servicePercentPrice);
+//Cумма всех дополнительных услуг
+allServicePrices = getAllServicePrices();
 
-if (fullPrice >= 30000) {
-    console.log("Даем скидку в 10%");
-}else if ((fullPrice >= 15000) && (fullPrice < 30000)) {
-    console.log("Даем скидку в 5%");
-}else if ((fullPrice < 15000) && (fullPrice >= 0)) {
-    console.log("Скидка не предусмотрена");
-}else if (fullPrice < 0) {
-    console.log("Что то пошло не так")
-}
+showTypeOf(title);
+showTypeOf(screenPrice);
+showTypeOf(adaptive);
+
+console.log("Cкидка пользователю: " + getRollbackMessage(fullPrice));
+
+console.log(getTitle(title));
+console.log("Стоимость за вычетом процента отката посреднику: " + servicePercentPrice);
+console.log(screens);
+console.log(screens.split(', '));

@@ -21,7 +21,7 @@ const asking = function (message) {
                 asking("Загаданное число меньше. Попробуйте еще");
             }
             if (num < requiredNumber) {                
-                asking("Загаданное число меньше. Попробуйте еще");
+                asking("Загаданное число больше. Попробуйте еще");
             }  
             if (num === requiredNumber) {   
                 //Конец игры             

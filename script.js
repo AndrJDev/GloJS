@@ -1,69 +1,89 @@
 "use strict";
-// lesson07
-// Работа с объектами
+// lesson08
+// Рефакторинг. Подготовка для работы с версткой
 
 const appData = {
     title: '',
-    screens: '',
+    screens: [],
     screenPrice: 0,
     adaptive: true,
     rollback : 10,
     fullPrice: 0,
     servicePercentPrice: 0,
     allServicePrices: 0,
-    service1: '',
-    service2: '',
+    services: {},  
+    //Проверка - это число
     isThisA_Number : function (enteredNumber) { 
         return (!isNaN(parseFloat(enteredNumber)) && isFinite(enteredNumber));    
-    },    
+    },   
+    //Проверка - это строка
+    isThisA_String : function (enteredString) { 
+        if (isNaN(Number(enteredString))) {            
+            return true;
+        }else {            
+            return false;
+        }        
+    },  
     //Обработка заголовка
     getTitle : function (str) {
         str = str.trim().toLowerCase();
-        return str[0].toUpperCase() + str.slice(1);
+        appData.title = str[0].toUpperCase() + str.slice(1);
     },
     // Вопросы пользователю
     asking : function () { 
-        appData.title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
-        appData.screens = prompt('Какие типы экранов нужно разработать?', 'Простые, Сложные, Интерактивные');
-    
-        console.log('Привет аскинг');
-
         do {
-            appData.screenPrice = prompt('Сколько будет стоить данная работа?', 50000);                
-        }while (!appData.isThisA_Number(appData.screenPrice));    
+            appData.title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
+        }while (!appData.isThisA_String(appData.title));    
+        
+        for (let i = 0; i < 2; i++) { 
+            let name;
+            do {
+                name = prompt('Какие типы экранов нужно разработать?', 'Простые');
+            }while (!appData.isThisA_String(name));    
+
+            let price = 0;            
+            do {
+                price = prompt('Сколько будет стоить данная работа?', 25000);                
+            }while (!appData.isThisA_Number(price));    
+
+            appData.screens.push({id: i, name: name, price: price});
+        }        
+
+        // Доп. услуги
+        for (let i = 0; i < 2; i++) {
+            let name;
+            do {
+                name = prompt("Какой дополнительный тип услуги нужен?", 'Слайдер');
+            }while (!appData.isThisA_String(name));    
+
+            let price = 0;            
+
+            do {
+                price = prompt('Сколько это будет стоить?', 2000);                                        
+            }while (!appData.isThisA_Number(price));                            
+            
+            appData.services[name] = parseFloat(price);            
+        }   
     
         appData.screenPrice = parseFloat(appData.screenPrice);
         appData.adaptive = confirm('Нужен ли адаптив на сайте?');
     },
+    addPrices : function () {         
+        for (let screen of appData.screens) {
+            appData.screenPrice += +screen.price;            
+        }
+        // Сумма доп. услуг
+        for (let key in appData.services) {
+            appData.allServicePrices += appData.services[key];
+        }
+    },
     // Переопределение свойств
     propertyOverrides : function () {         
-        appData.title = appData.getTitle(appData.title);
-        //Cумма всех дополнительных услуг
-        appData.allServicePrices = appData.getAllServicePrices();
+        appData.getTitle(appData.title);        
         //Сумма стоимости верстки и стоимости дополнительных услуг
-        appData.fullPrice = appData.getFullPrice();
+        appData.getFullPrice();
         //Откат посреднику
-        appData.servicePercentPrice  = appData.getServicePercentPrices(appData.fullPrice, appData.rollback);       
-    },
-    // Доп. услуги
-    getAllServicePrices : function () {
-        let sum = 0;
-        let price = 0;
-    
-        for (let i = 0; i < 2; i++) {
-            if (i === 0) {
-                appData.service1 = prompt("Какой дополнительный тип услуги " + i  + " нужен?", 'Слайдер');
-            }else if (i === 1) {
-                appData.service2 = prompt("Какой дополнительный тип услуги " + i  + " нужен?", 'php mail');
-            }                
-            do {
-                price = prompt('Сколько это будет стоить?', 2000);                        
-                console.log(price);
-            }while (!appData.isThisA_Number(price));                            
-                    
-            sum += parseFloat(price);       
-        }    
-        return sum;
+        appData.getServicePercentPrices(appData.fullPrice, appData.rollback);       
     },
     //Подсчет итоговой стоимость минус сумма отката
     getServicePercentPrices : function (price, rollback) {    
@@ -73,7 +93,7 @@ const appData = {
     //Подсчет итоговой стоимость минус сумма отката
     getServicePercentPrices : function (price, rollback) {    
         let rollbackPercent = price * (rollback / 100);        
-        return Math.ceil(price - rollbackPercent);
+        appData.servicePercentPrice = Math.ceil(price - rollbackPercent);
     },
     // Сообщение о скидке
     getRollbackMessage : function(price) {
@@ -88,27 +108,22 @@ const appData = {
         }
     },
     getFullPrice() {
-        return appData.screenPrice + appData.allServicePrices;
+        appData.fullPrice = appData.screenPrice + appData.allServicePrices;
     },
     //Вывод в консоль
     logger : function () { 
+        console.log("Заголовок: " + appData.title);
+        console.log("Полная стоимость: " + appData.fullPrice);
         console.log("Сумма дополнительных услуг: " + appData.allServicePrices);
-
-        console.log("Cкидка пользователю: " + appData.getRollbackMessage(appData.fullPrice));
-        console.log(appData.getTitle(appData.title));
+        console.log("Cкидка пользователю: " + appData.getRollbackMessage(appData.fullPrice));        
         console.log("Стоимость за вычетом процента отката посреднику: " + appData.servicePercentPrice);
-        
-        console.log(appData.screens);
-        console.log(appData.screens.split(', '));      
-
-        // Вывести в консоль из метода logger все свойства и методы объекта appData с помощью цикла for in  
-        for (let key in appData) {
-            console.log("Ключ: " + key + " " + "Значение: " + appData[key]);
-        }            
+                
+        console.log(appData.services);
+        console.log(appData.screens);                  
     },    
-    start : function () { 
-        console.log("start сработал");
-        appData.asking();                
+    start : function () {         
+        appData.asking();   
+        appData.addPrices();             
         appData.propertyOverrides();
         appData.logger(); 
     },

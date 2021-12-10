@@ -1,6 +1,6 @@
 "use strict";
-// lesson08
-// Рефакторинг. Подготовка для работы с версткой
+// lesson09
+// DOM
 
 const appData = {
     title: '',
@@ -25,11 +25,49 @@ const appData = {
         }        
     },  
     //Обработка заголовка
-    getTitle : function (str) {
+    processingTitle : function (str) {
         str = str.trim().toLowerCase();
         appData.title = str[0].toUpperCase() + str.slice(1);
     },
-    // Вопросы пользователю
+    // Получение элементов DOM
+    getAllElemenst : function () { 
+        // Получить заголовок
+        appData.title = document.getElementsByTagName('h1')[0].innerHTML;               
+        // Получить кнопки "Рассчитать" и "Сброс" через метод getElementsByClassName. 
+        // (класс handler_btn) 
+        let handler_btns = document.getElementsByClassName('handler_btn');
+        let btn_start = handler_btns[0];
+        let btn_reset = handler_btns[1];
+        // Получить кнопку "+" под выпадающим списком через метод querySelector. (класс screen-btn)
+        let btn_plus = document.querySelector('.screen-btn');
+        // Получить все элементы с классом other-items в две разные переменные. 
+        // В первую элементы у которых так же присутствует класс percent, 
+        // во вторую элементы у которых так же присутствует класс number через метод querySelectorAll.        
+        let other_item_percent = document.querySelectorAll('.other-items.percent');
+        let other_item_number = document.querySelectorAll('.other-items.number');
+        // Получить input type=range через его родителя с классом rollback одним запросом 
+        // через метод querySelector.
+        // let input_type_range = document.querySelector('.rollback input');
+        let input_type_range = document.querySelector('.rollback input[type="range"]');        
+        // Получить span с классом range-value через его родителя с классом rollback 
+        //одним запросом через метод querySelector.                
+        // let span_range_value = document.querySelector('.rollback span'); 
+        let span_range_value = document.querySelector('.rollback .range-value'); 
+        // Получить все инпуты с классом total-input справа через метод getElementsByClassName. 
+        // (класс total-input, получить именно элементы, а не коллекции)
+
+        let total_inputs = document.getElementsByClassName('total-input'); 
+        let arr_inputs = [];        
+        for (let input of total_inputs) {
+                arr_inputs.push(input);    
+        }
+        // console.log(arr_inputs);
+
+        // Получить все блоки с классом screen в изменяемую переменную ( let ) через метод querySelectorAll 
+        // (далее мы будем переопределять ее значение)
+        let screens = document.querySelectorAll('.screen'); 
+        console.log(screens[0].childNodes);       
+    },    
     asking : function () { 
         do {
             appData.title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
@@ -79,7 +117,7 @@ const appData = {
     },
     // Переопределение свойств
     propertyOverrides : function () {         
-        appData.getTitle(appData.title);        
+        appData.processingTitle(appData.title);        
         //Сумма стоимости верстки и стоимости дополнительных услуг
         appData.getFullPrice();
         //Откат посреднику
@@ -122,7 +160,8 @@ const appData = {
         console.log(appData.screens);                  
     },    
     start : function () {         
-        appData.asking();   
+        // appData.asking(); 
+        appData.getAllElemenst(); 
         appData.addPrices();             
         appData.propertyOverrides();
         appData.logger(); 

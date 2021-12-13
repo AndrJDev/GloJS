@@ -31,48 +31,94 @@ const appData = {
     servicePercentPrice: 0,
     allServicePrices: 0,
     services: {},
+    init: function () {
+        appData.addTitle();          
+        startBtn.addEventListener('click', appData.start);
+        buttonPlus.addEventListener('click', appData.addScreenBlock);
+    },
+    start: function () {
+        appData.addScreens();
+        appData.addServices();
+
+        // appData.asking();         
+        // appData.addPrices();
+        // appData.propertyOverrides();
+        // appData.logger();
+    },
+    addTitle: function () {                
+        document.title = title.textContent;
+    },
     //Проверка - это число
-    isThisA_Number: function (enteredNumber) {
-        return (!isNaN(parseFloat(enteredNumber)) && isFinite(enteredNumber));
-    },
+    // isThisA_Number: function (enteredNumber) {
+    //     return (!isNaN(parseFloat(enteredNumber)) && isFinite(enteredNumber));
+    // },
     //Проверка - это строка
-    isThisA_String: function (enteredString) {
-        if (isNaN(Number(enteredString))) {
-            return true;
-        } else {
-            return false;
-        }
+    // isThisA_String: function (enteredString) {
+    //     if (isNaN(Number(enteredString))) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // },
+    addScreens: function () {
+        screens = document.querySelectorAll('.screen');
+
+        screens.forEach(function(screen, index) {
+            const select = screen.querySelector('select');
+            const input = screen.querySelector('input');
+            const selectName = select.options[select.selectedIndex].textContent;
+            appData.screens.push({ 
+                id: index, 
+                name: selectName, 
+                price: +select.value * +input.value 
+            });      
+        });  
+        // console.log(appData.screens);        
     },
+    addServices: function () {            
+        otherItemsPercent.forEach(function (item) {
+            const check = item.querySelector('input[type-checkbox]');
+            const label = item.querySelector('label');
+            const input = item.querySelector('input[type-text]');
+            console.log(item);            
+        })
+        // otherItemsNumber
+
+    },
+    addScreenBlock: function () {    
+        const cloneScreen = screens[0].cloneNode(true);
+        screens[screens.length - 1].after(cloneScreen);
+    },   
     //Обработка заголовка
-    processingTitle: function (str) {
-        str = str.trim().toLowerCase();
-        appData.title = str[0].toUpperCase() + str.slice(1);
-    },
+    // processingTitle: function (str) {
+    //     str = str.trim().toLowerCase();
+    //     appData.title = str[0].toUpperCase() + str.slice(1);
+    // },
     asking: function () {
-        do {
-            appData.title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
-        } while (!appData.isThisA_String(appData.title));
+        // do {
+        //     appData.title = prompt('Как называется ваш проект?', ' КаЛьКулятор Верстки');
+        // } while (!appData.isThisA_String(appData.title));
 
         for (let i = 0; i < 2; i++) {
             let name;
-            do {
-                name = prompt('Какие типы экранов нужно разработать?', 'Простые');
-            } while (!appData.isThisA_String(name));
+            // do {
+            //     name = prompt('Какие типы экранов нужно разработать?', 'Простые');
+            // } while (!appData.isThisA_String(name));
 
             let price = 0;
             do {
                 price = prompt('Сколько будет стоить данная работа?', 25000);
             } while (!appData.isThisA_Number(price));
 
-            appData.screens.push({ id: i, name: name, price: price });
+            // appData.screens.push({ id: i, name: name, price: price });
         }
 
         // Доп. услуги
         for (let i = 0; i < 2; i++) {
             let name;
-            do {
-                name = prompt("Какой дополнительный тип услуги нужен?", 'Слайдер');
-            } while (!appData.isThisA_String(name));
+            // do {
+            //     name = prompt("Какой дополнительный тип услуги нужен?", 'Слайдер');
+            // } while (!appData.isThisA_String(name));
 
             let price = 0;
 
@@ -84,7 +130,7 @@ const appData = {
         }
 
         appData.screenPrice = parseFloat(appData.screenPrice);
-        appData.adaptive = confirm('Нужен ли адаптив на сайте?');
+        // appData.adaptive = confirm('Нужен ли адаптив на сайте?');
     },
     addPrices: function () {
         for (let screen of appData.screens) {
@@ -97,7 +143,7 @@ const appData = {
     },
     // Переопределение свойств
     propertyOverrides: function () {
-        appData.processingTitle(appData.title);
+        // appData.processingTitle(appData.title);
         //Сумма стоимости верстки и стоимости дополнительных услуг
         appData.getFullPrice();
         //Откат посреднику
@@ -138,13 +184,7 @@ const appData = {
 
         console.log(appData.services);
         console.log(appData.screens);
-    },
-    start: function () {
-        // appData.asking();         
-        appData.addPrices();
-        appData.propertyOverrides();
-        appData.logger();
-    },
+    },    
 }
 
-// appData.start();
+appData.init();
